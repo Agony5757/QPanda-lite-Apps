@@ -1,4 +1,4 @@
-from task import load_all_online_info, query_all_task
+from qpandalite.task.originq import load_all_online_info, query_all_task
 import json
 from pathlib import Path
 import os
@@ -25,4 +25,4 @@ if __name__ == "__main__":
             print(f'  taskid:{taskid}, taskname:{taskname}')
         print(f'Unfinished: {len(not_finished)}')    
     else:
-        print('All Ok! You can move on to step 4 ~~')
+        print('All Ok! You can move on to step 3-2 ~~')

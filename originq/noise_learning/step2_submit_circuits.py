@@ -2,14 +2,15 @@ from backend import simulate_backend
 from pathlib import Path
 import os
 import json
-from task import load_circuit, load_circuit_group, submit_task, submit_task_group, default_task_group_size
+from qpandalite import load_circuit, load_circuit_group
+from qpandalite.task.originq import submit_task, default_task_group_size
 
 def split_and_submit_group(circuits, shots, is_amend, circuit_optimize, confirm_count = 4):
     
     if len(circuits) <= default_task_group_size:
         filename = 'Noise-learning'
-        response = submit_task_group(circuit=circuits, shots = shots, task_name=filename, measurement_amend=is_amend)
-        print(filename, 'OK')
+        taskid = submit_task(circuit=list(circuits.values()), shots = shots, task_name=filename, measurement_amend=is_amend)
+        print(f'Taskid: {taskid}, {filename}')
     else:
         groups = []
         group = []
@@ -29,9 +30,9 @@ def split_and_submit_group(circuits, shots, is_amend, circuit_optimize, confirm_
                 confirm_count -= 1
 
             filename = 'Noise-learning-{}'.format(i)
-            response = submit_task_group(circuits=group, shots=shots, circuit_optimize = circuit_optimize,
+            taskid = submit_task(circuit=group, shots=shots, circuit_optimize = circuit_optimize,
                                             task_name=filename, measurement_amend=is_amend)
-            print(filename, 'OK')
+            print(f'Taskid: {taskid}, {filename}')
             
 if __name__ == '__main__':
        
@@ -64,3 +65,5 @@ if __name__ == '__main__':
         circuits = load_circuit_group(path)
 
         split_and_submit_group(circuits, shots, is_amend, circuit_optimize)
+        
+    print('All Ok! You can move on to step 3-1 ~~')
