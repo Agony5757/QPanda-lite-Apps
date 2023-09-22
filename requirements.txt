@@ -1,0 +1,13 @@
+# Fundamentals
+qpandalite
+
+# For OriginQ
+pyqpanda
+
+# For IBM
+qiskit
+qiskit-ibm-provider
+qiskit-ibmq-provider
+
+# For Quafu
+pyquafu
