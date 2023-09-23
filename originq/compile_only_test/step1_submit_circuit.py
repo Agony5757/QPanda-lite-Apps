@@ -49,11 +49,18 @@ MEASURE q[53], c[3]
 MEASURE q[54], c[4]
 '''.strip()
 
+circuit_2 = '''
+QINIT 72
+CREG 10
+RX q[45]
+MEASURE q[45],c[0]
+'''.strip()
+
 savepath = Path.cwd() / 'online_info'
 
 if __name__ == '__main__':
     taskid = submit_task_compile_only(
-        circuit_1,
+        circuit_2,
         circuit_optimize=True,
         auto_mapping=False,
         task_name='CompileOnlyTest', 

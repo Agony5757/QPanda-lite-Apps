@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 from qpandalite.task.originq import *
 import qpandalite
-from .step1_submit_circuit import savepath
+from step1_submit_circuit import savepath
 
 figure_save_path = Path.cwd() / 'timeline_plot'
 

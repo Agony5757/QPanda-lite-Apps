@@ -3,7 +3,7 @@ from qpandalite import create_originq_online_config
 if __name__ == '__main__':
 
     # The originq qpilot login state token
-    token = "D53562E7F8BA41E5"
+    token = "9557CB6CFCC14074"
 
     # The url for submitting the task
     submit_url = "https://10.10.7.99:10080/task/realQuantum/run"
