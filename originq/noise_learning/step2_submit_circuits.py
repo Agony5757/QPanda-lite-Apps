@@ -4,6 +4,9 @@ import os
 import json
 from qpandalite import load_circuit, load_circuit_group
 from qpandalite.task.originq import submit_task, default_task_group_size
+from step1_generate_noise_lerning_circuits import available_qubits
+
+default_task_group_size = 1
 
 def split_and_submit_group(circuits, shots, is_amend, circuit_optimize, confirm_count = 4):
     
@@ -45,7 +48,11 @@ if __name__ == '__main__':
     Mode = 'Single-Txt'
 
     if Mode == 'Simulation':
-        n_qubits = 6
+        qubit_limit = 20
+        if len(available_qubits) > qubit_limit:
+            raise NotImplementedError(f'Cannot simulate such large circuit (qubit > {qubit_limit}).')
+        
+        n_qubits = len(available_qubits)
         basepath = Path.cwd() / 'output_circuits'
         results = simulate_backend(basepath,n_qubits)
         output_path = Path.cwd() / 'output_results'
@@ -54,6 +61,7 @@ if __name__ == '__main__':
         file_name = 'results.json'
         with open(output_path/file_name,'w') as fp:
             json.dump(results,fp)
+
     elif Mode == 'Multi-txt':
         basepath = Path.cwd() / 'output_circuits'
         circuits = load_circuit(basepath)
@@ -63,7 +71,6 @@ if __name__ == '__main__':
     elif Mode == 'Single-Txt':
         path = Path.cwd() / 'output_circuits' / 'originir.txt'
         circuits = load_circuit_group(path)
-
         split_and_submit_group(circuits, shots, is_amend, circuit_optimize)
         
     print('All Ok! You can move on to step 3-1 ~~')

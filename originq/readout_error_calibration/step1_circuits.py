@@ -3,7 +3,6 @@ from itertools import product
 import json
 import requests
 from qpandalite.task.originq import *
-import pyqpanda as pq
 
 def remap_ir(ir_str, chip_idx):
     dup_ir = ir_str
@@ -25,15 +24,12 @@ def single_qubit_circuits(qubit_number, qv):
         circuits.append(circuit)
     return circuits
 
-savepath = Path.cwd() / 'online_info'
-qv = [45,46,52,53,54,48]
-
+available_qubits = [0,1,2,3,6,7,8,9,10,11]
 if __name__ == '__main__':
-    circuits = single_qubit_circuits(len(qv), qv)
+    circuits = single_qubit_circuits(len(available_qubits), available_qubits)
     # circuits, theory, flip = double_gate_circuits(qv)
     taskid = submit_task(circuits, shots=1000,
-                         task_name=f'test single gate qubit {qv}',
+                         task_name=f'test single gate qubit {available_qubits}',
                          measurement_amend=False,
                          circuit_optimize=True,
-                         auto_mapping=False,
-                         savepath=savepath)
+                         auto_mapping=False)

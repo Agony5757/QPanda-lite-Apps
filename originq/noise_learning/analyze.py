@@ -1,3 +1,4 @@
+from copy import deepcopy
 import numpy as np
 import scipy
 import json
@@ -152,6 +153,9 @@ def get_pauli_pair(pauli,pattern,mapping_info):
                 conj_pauli[mapping_info[str(pair[0])]] = y[0]
                 conj_pauli[mapping_info[str(pair[1])]] = y[1]
     return ''.join(conj_pauli)
+        
+def weight(pauli):
+    return sum([p != "I" for p in pauli])
 
 def analyze(circuit_data_path,result_path):
     """
@@ -164,7 +168,6 @@ def analyze(circuit_data_path,result_path):
     """
     circuit_data = load_json(circuit_data_path)
     data = {}
-    noise_data = []
     data['model_terms'] = circuit_data['model_terms']
     patterns = circuit_data['cz_patterns']
     mapping_qubits = circuit_data['mapping_qubits']
@@ -173,52 +176,54 @@ def analyze(circuit_data_path,result_path):
     for qubit in mapping_qubits:
         qubit_list[mapping_qubits[qubit]]=int(qubit)
 
-    all_of_term_data = []
+    all_of_term_data_patterns = dict()
+    noise_data_patterns = dict()
     results = load_json(result_path)
     count = 0 
-    for index,pattern in enumerate(patterns):
-        num_of_circuit = circuit_data['num_of_{}_layer_circuits'.format(index)]
+    for i, pattern in enumerate(patterns):
+        all_of_term_data = []
+        noise_data = []
+        num_of_circuit = circuit_data['num_of_{}_layer_circuits'.format(i)]
         term_data = {}
         for pauli in data['model_terms']:
             pair = get_pauli_pair(pauli,pattern,data['mapping_info'])
             term_data[pauli] = TermData(pauli, pair)
         for ind in range(num_of_circuit):
-            data['ro_string'] = circuit_data['{}_{}_ro_string'.format(index,ind)] 
-            data['meas_base'] = circuit_data['{}_{}_meas_base'.format(index,ind)]
-            data['depth'] = circuit_data['{}_{}_depth'.format(index,ind)]
+            data['ro_string'] = circuit_data['{}_{}_ro_string'.format(i,ind)] 
+            data['meas_base'] = circuit_data['{}_{}_meas_base'.format(i,ind)]
+            data['depth'] = circuit_data['{}_{}_depth'.format(i,ind)]
             add_expectation(data,term_data,results[count])
             count += 1
         all_of_term_data.append(term_data)
         
-    for index,term_data in enumerate(all_of_term_data):
-        noise_coeffes = {}
-        coeffs = fit_noise_model(term_data,index,qubit_list)
-        noise_coeffes['cz_pattern'] = patterns[index]
-        noise_coeffes['coeffs'] = dict(zip(data['model_terms'],coeffs))        
-        noise_coeffes['fidelity'] = {pauli: term_data[pauli].fidelity 
-                                     for pauli in term_data}
-        noise_coeffes['qubit_list'] = qubit_list
-            
-        noise_data.append(noise_coeffes)
-    
+        for index,term_data in enumerate(all_of_term_data):
+            noise_coeffes = {}
+            coeffs = fit_noise_model(term_data,index,qubit_list)
+            noise_coeffes['cz_pattern'] = patterns[index]
+            noise_coeffes['coeffs'] = dict(zip(data['model_terms'],coeffs))        
+            noise_coeffes['fidelity'] = {pauli: term_data[pauli].fidelity 
+                                        for pauli in term_data}
+            noise_coeffes['qubit_list'] = qubit_list
+                
+            noise_data.append(noise_coeffes)
         
-    def weight(pauli):
-        return sum([p != "I" for p in pauli])
-    spam = {term:0 for term in data['model_terms'] if weight(term) == 1}
-    
-    for index,term_data in enumerate(all_of_term_data):
-        spam_coeffs = get_spam_coeffs(term_data)
-        for term in spam:
-            spam[term] += spam_coeffs[term]/len(all_of_term_data)
-        noise_data[index]['spam_noise'] = spam
+        spam = {term:0 for term in data['model_terms'] if weight(term) == 1}
         
+        for index,term_data in enumerate(all_of_term_data):
+            spam_coeffs = get_spam_coeffs(term_data)
+            for term in spam:
+                spam[term] += spam_coeffs[term]/len(all_of_term_data)
+            noise_data[index]['spam_noise'] = spam
+        
+        all_of_term_data_patterns[str(pattern)] = deepcopy(all_of_term_data)
+        noise_data_patterns[str(pattern)] = deepcopy(noise_data)
+
     output_path = Path.cwd() / 'output_noise_data'
     
     if not os.path.exists(output_path):        
         os.makedirs(output_path)
         
-    filename = 'noise_data.json'
-    
+    filename = 'noise_data.json'    
     noise_data_save_path = os.path.join(output_path,filename)  
     with open(noise_data_save_path,'w') as fp:
-        json.dump(noise_data,fp)
+        json.dump(noise_data_patterns,fp)

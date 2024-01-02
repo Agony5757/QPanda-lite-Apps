@@ -1,4 +1,4 @@
-from task import load_all_online_info
+from qpandalite.task.originq import load_all_online_info, query_all_task
 from pathlib import Path
 import json
 import os

@@ -7,16 +7,14 @@ from itertools import product
 import numpy as np
 import seaborn as sns
 
-from step1_circuits import savepath, qv
+from step1_circuits import available_qubits
 
 def plot(results, qubit_number):
-    all_string = product([0, 1], repeat=qubit_number)
     plot_table = np.zeros((2**qubit_number, 2**qubit_number))
     for index, result in enumerate(results):
         for key, items in result.items():
-            new_index = np.binary_repr(index, 6)[::-1]
-            new_index = int(new_index, 2)
-            plot_table[new_index, int(key, 2)] = items / 1000
+            new_index = int(np.binary_repr(index)[::-1],2)
+            plot_table[new_index, int(key, 16)] = items
     sns.heatmap(plot_table)
     plt.show()
     return plot_table
@@ -39,44 +37,21 @@ def double_qubit_check(result, theory, flip):
 
 
 if __name__ == '__main__':
-    online_info = load_all_online_info(savepath=savepath)
-    query_all_task(savepath=savepath)
+    taskid = get_last_taskid()
+    results = query_by_taskid(taskid)
+    print(results)
+    data = []
+    
+    if results['status'] != 'success':
+        print('Not finished')
+        exit(0)
+    
+    results = results['result']
 
-    not_finished = []
+    for result in results:
+        keys = result['key']
+        values = result['value']
+        result_dict = {keys[i]: values[i] for i in range(len(keys))}
+        data.append(result_dict)
 
-    for task in online_info:
-        taskid = task['taskid']
-        taskname = '' if 'taskname' not in task else task['taskname']
-        if not os.path.exists(savepath / f'{taskid}.txt'):
-            not_finished.append({'taskid': taskid, 'taskname': taskname})
-
-    if not_finished:
-        print('Unfinished task list')
-        for task in not_finished:
-            taskid = task['taskid']
-            taskname = task['taskname'] if task['taskname'] else 'null'
-            print(f'  taskid:{taskid}, taskname:{taskname}')
-        print(f'Unfinished: {len(not_finished)}')
-    else:
-        all_result = {}
-        for i, task in enumerate(online_info):
-            result_my = []
-            taskid = task['taskid']
-            taskname = task['taskname']
-            print(f'Taskid: {taskid}')
-            with open(savepath / f'{taskid}.txt') as fp:
-                taskinfo = json.load(fp)
-
-            if taskinfo['status'] == 'failed':
-                continue
-
-            result_list = taskinfo["result"]
-
-            for result in result_list:
-                keys = result['key']
-                values = result['value']
-                result_dict = {keys[i]: values[i] for i in range(len(keys))}
-                result_my.append(result_dict)
-
-            all_result[taskname] = result_my
-            table = plot(all_result[taskname], 6)
+    table = plot(data, len(available_qubits))

@@ -118,6 +118,7 @@ def generate_pauli_twirl_circuit(qubit_set,cz_pattern,repeats = 40):
             idle_qubit_set.remove(pair[0])
         if pair[1] in idle_qubit_set:
             idle_qubit_set.remove(pair[1])    
+
     for i in range(repeats):
         pauli_list = []
         clifford_conj_list = []
@@ -125,34 +126,30 @@ def generate_pauli_twirl_circuit(qubit_set,cz_pattern,repeats = 40):
         for qubit in idle_qubit_set:
             pauli = random_pauli(1,3)
             pauli_list.append(pauli)
-            repeats_inst += (
-                f'{pauli} q[{qubit}]\n')    
+            if pauli != 'I': repeats_inst += (f'{pauli} q[{qubit}]\n')    
                                                        
         for pair in cz_pattern:
             l1,l2,r1,r2 = generate_pauli_twirls()
             clifford_conj_list.append((r1,r2))
             
-            repeats_inst += (f'{l1} q[{pair[0]}]\n')
-            repeats_inst += (f'{l2} q[{pair[1]}]\n')
+            if l1 != 'I': repeats_inst += (f'{l1} q[{pair[0]}]\n')
+            if l2 != 'I': repeats_inst += (f'{l2} q[{pair[1]}]\n')
                 
-        repeats_inst += bairrer_all(qubit_list)
+        # repeats_inst += bairrer_all(qubit_list)
         
         for pair in cz_pattern:  
             repeats_inst += (f'CZ q[{pair[0]}],q[{pair[1]}]\n')
             
-        repeats_inst += bairrer_all(qubit_list)
+        # repeats_inst += bairrer_all(qubit_list)
         
         for ind,qubit in enumerate(idle_qubit_set):
             pauli = pauli_list[ind]
-            repeats_inst += (
-            f'{pauli} q[{qubit}]\n')  
+            if pauli != 'I': repeats_inst += (f'{pauli} q[{qubit}]\n')  
                                             
         for clifford_pair,pair in zip(clifford_conj_list,cz_pattern):     
-            repeats_inst += (
-                f'{clifford_pair[0]} q[{pair[0]}]\n')
-            repeats_inst += (
-                f'{clifford_pair[1]} q[{pair[1]}]\n')
-        repeats_inst += bairrer_all(qubit_list)
+            if clifford_pair[0] != 'I': repeats_inst += (f'{clifford_pair[0]} q[{pair[0]}]\n')
+            if clifford_pair[1] != 'I': repeats_inst += (f'{clifford_pair[1]} q[{pair[1]}]\n')
+        # repeats_inst += bairrer_all(qubit_list)
 
     return repeats_inst
 

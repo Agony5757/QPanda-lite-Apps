@@ -163,3 +163,6 @@ online_info/
 output_circuits/
 history/
 data.json
+*.png
+originq/noise_learning/output_noise_data/noise_data.json
+originq/noise_learning/output_results/results.json
