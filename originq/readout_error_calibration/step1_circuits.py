@@ -4,12 +4,6 @@ import json
 import requests
 from qpandalite.task.originq import *
 
-def remap_ir(ir_str, chip_idx):
-    dup_ir = ir_str
-    for i in range(len(chip_idx)):
-        dup_ir = dup_ir.replace('q[{}]'.format(i), 'q[{}]'.format(chip_idx[i]))
-    return dup_ir
-
 def single_qubit_circuits(qubit_number, qv):
     all_string = product([0, 1], repeat=qubit_number)
     circuits = []
@@ -24,7 +18,7 @@ def single_qubit_circuits(qubit_number, qv):
         circuits.append(circuit)
     return circuits
 
-available_qubits = [0,1,2,3,6,7,8,9,10,11]
+available_qubits = [1,2,3,6,7,8,9,10,11]
 if __name__ == '__main__':
     circuits = single_qubit_circuits(len(available_qubits), available_qubits)
     # circuits, theory, flip = double_gate_circuits(qv)
