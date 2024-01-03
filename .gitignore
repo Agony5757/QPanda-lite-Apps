@@ -166,3 +166,7 @@ data.json
 *.png
 originq/noise_learning/output_noise_data/noise_data.json
 originq/noise_learning/output_results/results.json
+*.zip
+originq/randomized_benchmarking/rb44.dat
+originq/randomized_benchmarking/rb22.dat
+originq/randomized_benchmarking/rb_circuit.txt

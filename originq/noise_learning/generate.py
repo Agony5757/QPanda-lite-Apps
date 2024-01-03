@@ -1,6 +1,8 @@
 import pyqpanda as pq
 import numpy as np
 import random
+
+from tqdm import tqdm
 from subgraph import generate_meas_bases,generate_subgraph,generate_model_terms
 import networkx as nx
 import time
@@ -228,11 +230,11 @@ def noise_learning_generate_circuits(n_qubits,
     
     if not os.path.exists(output_path):
         os.makedirs(output_path)
-        
-    for index,pattern in enumerate(cz_pattern):
+    circuit_id = 0
+    for index, pattern in enumerate(cz_pattern):
         print(pattern)
         count = 0 
-        for base in meas_bases:
+        for base in tqdm(meas_bases):
             for layer in depth:
                 for sample in range(random_samples):
                     if multi_txt:
@@ -256,7 +258,8 @@ def noise_learning_generate_circuits(n_qubits,
                         )
                     count += 1
                     if multi_txt:
-                        filename = '{}_base_{}_dpeth_{}_cz_patter_{}_sample.txt'.format(base,layer,pattern,sample)
+                        filename = '{}_base_{}_depth_{}_pattern_{}_sample_{}.txt'.format(circuit_id, base,layer,index,sample)
+                        circuit_id += 1
                         with open(output_path / filename, 'w') as fp:
                             fp.write(originir)
           

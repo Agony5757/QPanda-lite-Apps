@@ -44,8 +44,8 @@ if __name__ == '__main__':
     circuit_optimize = True
 
     # Mode = 'Simulation'
-    # Mode = 'Multi-Txt'
-    Mode = 'Single-Txt'
+    Mode = 'Multi-Txt'
+    # Mode = 'Single-Txt'
 
     if Mode == 'Simulation':
         qubit_limit = 20
@@ -62,7 +62,7 @@ if __name__ == '__main__':
         with open(output_path/file_name,'w') as fp:
             json.dump(results,fp)
 
-    elif Mode == 'Multi-txt':
+    elif Mode == 'Multi-Txt':
         basepath = Path.cwd() / 'output_circuits'
         circuits = load_circuit(basepath)
 

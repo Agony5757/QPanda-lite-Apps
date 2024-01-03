@@ -43,7 +43,7 @@ with open(path, 'r') as fp:
         color = [make_color(pair[1]) for pair in fidelity_data]
 
         import matplotlib.pyplot as plt
-        plt.figure(dpi=180,figsize=[35,10])
+        plt.figure(dpi=180,figsize=[150,10])
         plt.xticks(x, label, rotation=75)
         plt.bar(x, y, color=color)
         plt.ylim([0.5,1])
