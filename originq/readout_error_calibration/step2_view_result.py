@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from itertools import product
 import numpy as np
 import seaborn as sns
+import qpandalite
 
 from step1_circuits import available_qubits
 
@@ -13,8 +14,7 @@ def plot(results, qubit_number):
     plot_table = np.zeros((2**qubit_number, 2**qubit_number))
     for index, result in enumerate(results):
         for key, items in result.items():
-            new_index = int(np.binary_repr(index)[::-1],2)
-            plot_table[new_index, int(key, 16)] = items
+            plot_table[index, key] = items
     sns.heatmap(plot_table)
     plt.show()
     return plot_table
@@ -39,7 +39,6 @@ def double_qubit_check(result, theory, flip):
 if __name__ == '__main__':
     taskid = get_last_taskid()
     results = query_by_taskid(taskid)
-    print(results)
     data = []
     
     if results['status'] != 'success':
@@ -48,10 +47,8 @@ if __name__ == '__main__':
     
     results = results['result']
 
-    for result in results:
-        keys = result['key']
-        values = result['value']
-        result_dict = {keys[i]: values[i] for i in range(len(keys))}
-        data.append(result_dict)
+    results = qpandalite.convert_originq_result(results, style = 'keyvalue', prob_or_shots='prob')
 
-    table = plot(data, len(available_qubits))
+    print(len(results))
+    print(len(results[0]))
+    table = plot(results, len(available_qubits))

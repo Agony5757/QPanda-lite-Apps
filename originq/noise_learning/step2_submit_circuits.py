@@ -6,7 +6,7 @@ from qpandalite import load_circuit, load_circuit_group
 from qpandalite.task.originq import submit_task, default_task_group_size
 from step1_generate_noise_lerning_circuits import available_qubits
 
-default_task_group_size = 1
+default_task_group_size = 200
 
 def split_and_submit_group(circuits, shots, is_amend, circuit_optimize, confirm_count = 4):
     
