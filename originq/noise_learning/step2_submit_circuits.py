@@ -40,12 +40,12 @@ def split_and_submit_group(circuits, shots, is_amend, circuit_optimize, confirm_
 if __name__ == '__main__':
        
     is_amend = False
-    shots = 256
+    shots = 500
     circuit_optimize = True
 
     # Mode = 'Simulation'
-    # Mode = 'Multi-Txt'
-    Mode = 'Single-Txt'
+    Mode = 'Multi-Txt'
+    # Mode = 'Single-Txt'
 
     if Mode == 'Simulation':
         qubit_limit = 20
@@ -62,7 +62,7 @@ if __name__ == '__main__':
         with open(output_path/file_name,'w') as fp:
             json.dump(results,fp)
 
-    elif Mode == 'Multi-txt':
+    elif Mode == 'Multi-Txt':
         basepath = Path.cwd() / 'output_circuits'
         circuits = load_circuit(basepath)
 

@@ -157,7 +157,7 @@ def get_pauli_pair(pauli,pattern,mapping_info):
 def weight(pauli):
     return sum([p != "I" for p in pauli])
 
-def analyze(circuit_data_path,result_path):
+def analyze(circuit_data_path,result_path,verbose=False):
     """
     Noise_learning analysis 
     Args:
@@ -166,6 +166,10 @@ def analyze(circuit_data_path,result_path):
     Returns:
         None.  
     """
+    if verbose:
+        from tqdm import tqdm
+    else:
+        tqdm = lambda i : i
     circuit_data = load_json(circuit_data_path)
     data = {}
     data['model_terms'] = circuit_data['model_terms']
@@ -188,7 +192,7 @@ def analyze(circuit_data_path,result_path):
         for pauli in data['model_terms']:
             pair = get_pauli_pair(pauli,pattern,data['mapping_info'])
             term_data[pauli] = TermData(pauli, pair)
-        for ind in range(num_of_circuit):
+        for ind in tqdm(range(num_of_circuit)):
             data['ro_string'] = circuit_data['{}_{}_ro_string'.format(i,ind)] 
             data['meas_base'] = circuit_data['{}_{}_meas_base'.format(i,ind)]
             data['depth'] = circuit_data['{}_{}_depth'.format(i,ind)]
@@ -196,7 +200,7 @@ def analyze(circuit_data_path,result_path):
             count += 1
         all_of_term_data.append(term_data)
         
-        for index,term_data in enumerate(all_of_term_data):
+        for index,term_data in tqdm(enumerate(all_of_term_data)):
             noise_coeffes = {}
             coeffs = fit_noise_model(term_data,index,qubit_list)
             noise_coeffes['cz_pattern'] = patterns[index]
@@ -209,7 +213,7 @@ def analyze(circuit_data_path,result_path):
         
         spam = {term:0 for term in data['model_terms'] if weight(term) == 1}
         
-        for index,term_data in enumerate(all_of_term_data):
+        for index,term_data in tqdm(enumerate(all_of_term_data)):
             spam_coeffs = get_spam_coeffs(term_data)
             for term in spam:
                 spam[term] += spam_coeffs[term]/len(all_of_term_data)

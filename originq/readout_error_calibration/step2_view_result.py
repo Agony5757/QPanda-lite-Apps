@@ -14,7 +14,7 @@ def plot(results, qubit_number):
     plot_table = np.zeros((2**qubit_number, 2**qubit_number))
     for index, result in enumerate(results):
         for key, items in result.items():
-            plot_table[index, key] = items
+            plot_table[index, key] = np.log2(items)
     sns.heatmap(plot_table)
     plt.show()
     return plot_table
@@ -39,6 +39,7 @@ def double_qubit_check(result, theory, flip):
 if __name__ == '__main__':
     taskid = get_last_taskid()
     results = query_by_taskid(taskid)
+    # print(results)
     data = []
     
     if results['status'] != 'success':
@@ -47,7 +48,10 @@ if __name__ == '__main__':
     
     results = results['result']
 
-    results = qpandalite.convert_originq_result(results, style = 'keyvalue', prob_or_shots='prob')
+    for result in results:
+        data.append(qpandalite.convert_originq_result(result, 
+                                                      style='keyvalue',
+                                                      prob_or_shots='prob'))
 
     print(len(results))
     print(len(results[0]))

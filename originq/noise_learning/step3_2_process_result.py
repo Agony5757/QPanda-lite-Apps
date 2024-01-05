@@ -1,6 +1,7 @@
 from qpandalite.task.originq import load_all_online_info, query_all_task
 from pathlib import Path
 import json
+import qpandalite
 import os
 
 if __name__ == "__main__":
@@ -23,9 +24,10 @@ if __name__ == "__main__":
         result_list = taskinfo["result"]
 
         for result in result_list:
-            keys = result['key']
-            values = result['value']
-            result_dict = {keys[i][::-1]:values[i] for i in range(len(keys))}
+            result_dict = qpandalite.convert_originq_result(result, 
+                                                            style='keyvalue', 
+                                                            prob_or_shots='prob',
+                                                            key_style='bin')
             results.append(result_dict)
             
     with open(output_path/file_name,'w') as fp:
