@@ -1,11 +1,12 @@
 import json
 import os
 from pathlib import Path
-from qpandalite.task.originq import *
+from qpandalite.task.origin_qcloud import *
+import qpandalite
 
 if __name__ == '__main__':
 
-    savepath = Path.cwd() / 'origin_online_info_verify'
+    savepath = Path.cwd() / 'online_info'
     # savepath = Path.cwd() / 'history' / 'online_info_verify_20230828-225536'
 
     online_info = load_all_online_info(savepath = savepath)
@@ -38,10 +39,12 @@ if __name__ == '__main__':
             
             result_list = taskinfo["result"]
 
-            for result in result_list:
-                keys = result['key']
-                values = result['value']
-                result_dict = {keys[i]:values[i] for i in range(len(keys))}                
+            for result_json in result_list:
+                result_dict = qpandalite.convert_originq_result(
+                    result_json, 
+                    style = 'list', 
+                    prob_or_shots='prob')
+
                 print(f'Task Result: {result_dict}')
 
             

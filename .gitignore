@@ -170,3 +170,4 @@ originq/noise_learning/output_results/results.json
 originq/randomized_benchmarking/rb44.dat
 originq/randomized_benchmarking/rb22.dat
 originq/randomized_benchmarking/rb_circuit.txt
+originq_cloud_config.json
