@@ -1,13 +1,13 @@
 import json
 import os
-from pathlib import Path
-from qpandalite.task.originq import *
+from pathlib import PureWindowsPath
 import matplotlib.pyplot as plt
 from itertools import product
 import numpy as np
 import seaborn as sns
 import qpandalite
 
+from qpandalite.task.origin_qcloud import *
 from step1_circuits import available_qubits
 
 def plot(results, qubit_number):
@@ -55,4 +55,4 @@ if __name__ == '__main__':
 
     print(len(results))
     print(len(results[0]))
-    table = plot(results, len(available_qubits))
+    table = plot(data, len(available_qubits))

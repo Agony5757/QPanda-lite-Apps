@@ -2,7 +2,7 @@ import numpy as np
 from itertools import product
 import json
 import requests
-from qpandalite.task.originq import *
+from qpandalite.task.origin_qcloud import *
 
 def single_qubit_circuits(qubit_number, qv):
     all_string = product([0, 1], repeat=qubit_number)
