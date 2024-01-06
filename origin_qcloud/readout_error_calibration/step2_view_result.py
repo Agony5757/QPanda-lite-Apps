@@ -14,7 +14,8 @@ def plot(results, qubit_number):
     plot_table = np.zeros((2**qubit_number, 2**qubit_number))
     for index, result in enumerate(results):
         for key, items in result.items():
-            plot_table[index, key] = np.log2(items)
+            # plot_table[index, key] = np.log2(items)
+            plot_table[index, key] = items
     sns.heatmap(plot_table)
     plt.show()
     return plot_table

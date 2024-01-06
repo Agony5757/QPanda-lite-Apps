@@ -18,7 +18,8 @@ def single_qubit_circuits(qubit_number, qv):
         circuits.append(circuit)
     return circuits
 
-available_qubits = [1,2,3,6,7,8,9,10,11]
+# available_qubits = [0,1,6,7,12,13,18,19]
+available_qubits = [24,25,30,31,36,37]
 if __name__ == '__main__':
     circuits = single_qubit_circuits(len(available_qubits), available_qubits)
     # circuits, theory, flip = double_gate_circuits(qv)

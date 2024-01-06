@@ -1,5 +1,5 @@
 
-from qpandalite.task.originq import submit_task
+from qpandalite.task.origin_qcloud import submit_task
 import json
 
 with open('rb_circuit.txt', 'r') as fp:
@@ -7,5 +7,7 @@ with open('rb_circuit.txt', 'r') as fp:
 
 print(len(circuits), type(circuits))
 
-taskid = submit_task(circuits, mapping=False, circuit_optimize=True, task_name='RB')
+input('Press Enter to confirm')
+
+taskid = submit_task(circuits, mapping=False, circuit_optimize=False, task_name='RB')
 print(taskid)
