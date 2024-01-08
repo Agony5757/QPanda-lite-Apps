@@ -25,7 +25,7 @@ if __name__ == '__main__':
     results = results['result']
 
     results = qpandalite.convert_originq_result(results, 
-                                                style='list',
+                                                style='keyvalue',
                                                 prob_or_shots='prob',
                                                 key_style='bin')
 
@@ -55,12 +55,18 @@ if __name__ == '__main__':
             cliffords_results = np.vstack((cliffords_results, total_expectations))        
 
     print(qubit_num)
+
+    clifford_length_sample_repeats = []
+    for clifford_length in clifford_lengths:
+        for i in range(samples):
+            clifford_length_sample_repeats.append(clifford_length)
+
     for i in range(qubit_num):
         plt.figure()
         plt.plot(clifford_lengths, cliffords_results[:, i])
         a0, p = fit_rb(clifford_lengths, cliffords_results[:, i])
         plt.plot(clifford_lengths, exp_decay(np.array(clifford_lengths), a0, p), label = 'fit')
-        # plt.scatter(clifford_lengths * samples, all_points[:, i])
+        plt.scatter(clifford_length_sample_repeats, all_points[:, i])
         plt.title(f'Qubit {qubits[i]} A={a0}, F={p}')
         plt.savefig(f'Q{qubits[i]}.png', bbox_inches = 'tight')
         # plt.show()

@@ -1,10 +1,11 @@
 import json
 from math import pi
+import os
 from pathlib import Path
 import numpy as np
 import rb_generator
 
-from qpandalite.task.originq_dummy import available_qubits, available_topology
+from qpandalite.task.origin_qcloud import available_qubits
 import qpandalite
 from tqdm import tqdm
 
@@ -53,12 +54,11 @@ def generate_rb_groups(rb22, qubits, clifford_ranges, samples):
     return circuits
 
 qubits = available_qubits
-qubits = [0,1,2,3,4]
+# qubits = [24,30,36,42,48,54,60]
 samples = 20
 
 # Define the clifford length
 clifford_lengths = list(range(2,10,2))+list(range(15,50,5))+list(range(60,100,10))+list(range(120,400,40))
-# clifford_lengths = [2,3]
 if __name__ == '__main__':
     rb22 = rb_generator.RB22()
     # Open file first
@@ -66,7 +66,11 @@ if __name__ == '__main__':
         print('load failed')
         exit(0)
 
+    # if os.path.exists(Path.cwd() / f'rb_circuit_{qubits}.txt'):
+    #     print('Use cached files. Nothing generated!')
+    #     exit(0)
+
     circuits = generate_rb_groups(rb22, qubits, clifford_lengths, samples)  
-    with open(Path.cwd() / 'rb_circuit.txt', 'w+') as fp:
+    with open(Path.cwd() / f'rb_circuits.txt', 'w+') as fp:
         json.dump(circuits, fp)
     

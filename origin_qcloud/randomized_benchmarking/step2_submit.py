@@ -2,7 +2,7 @@
 from qpandalite.task.origin_qcloud import submit_task
 import json
 
-with open('rb_circuit.txt', 'r') as fp:
+with open('rb_circuits.txt', 'r') as fp:
     circuits = json.load(fp)
 
 print(len(circuits), type(circuits))
