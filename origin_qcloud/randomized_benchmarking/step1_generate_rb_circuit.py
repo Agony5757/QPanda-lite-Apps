@@ -54,11 +54,11 @@ def generate_rb_groups(rb22, qubits, clifford_ranges, samples):
     return circuits
 
 qubits = available_qubits
-# qubits = [24,30,36,42,48,54,60]
+qubits = [30,31,32,33]
 samples = 20
 
 # Define the clifford length
-clifford_lengths = list(range(2,10,2))+list(range(15,50,5))+list(range(60,100,10))+list(range(120,400,40))
+clifford_lengths = list(range(2,10,2))+list(range(15,50,5))+list(range(60,100,10))+list(range(120,320,40))
 if __name__ == '__main__':
     rb22 = rb_generator.RB22()
     # Open file first

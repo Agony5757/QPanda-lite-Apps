@@ -173,5 +173,6 @@ if __name__ == '__main__':
                         shots=1000, 
                         task_name='Verify', 
                         circuit_optimize=True,
+                        measurement_amend=True,
                         auto_mapping=False)
     print(f'taskid: {taskid}')
